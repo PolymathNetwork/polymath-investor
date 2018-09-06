@@ -6,6 +6,7 @@ import { Field, reduxForm } from 'redux-form'
 import { Form, Button } from 'carbon-components-react'
 import { TextInput } from 'polymath-ui'
 import { required, integer, float } from 'polymath-ui/dist/validate'
+import type { STODetails } from 'polymathjs'
 
 export const formName = 'purchase'
 
@@ -13,7 +14,7 @@ type Props = {|
   handleSubmit: () => void,
   onClose: () => void,
   change: (field: string, value: string) => void,
-  rate: number,
+  details: STODetails,
 |}
 
 type State = {|
@@ -31,7 +32,7 @@ class PurchaseForm extends Component<Props, State> {
   handleTokensChange = (value) => {
     let cost = ''
     if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
-      cost = (new BigNumber(value)).div(this.props.rate).toString(10)
+      cost = (new BigNumber(value)).div(this.props.details.rate).toString(10)
     }
     this.props.change('cost', cost)
   }
@@ -39,7 +40,7 @@ class PurchaseForm extends Component<Props, State> {
   handleCostChange = (value) => {
     let tokens = ''
     if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
-      tokens = (new BigNumber(value)).times(this.props.rate).toString(10)
+      tokens = (new BigNumber(value)).times(this.props.details.rate).toString(10)
     }
     this.props.change('tokens', tokens)
   }
@@ -58,7 +59,7 @@ class PurchaseForm extends Component<Props, State> {
         <Field
           name='cost'
           component={TextInput}
-          label='Cost in ETH (Ethereum)'
+          label={'Investment in ' + (this.props.details.isPolyFundraise ? 'POLY' : 'ETH')}
           placeholder='Enter the amount'
           onChangeCode={this.handleCostChange}
           validate={[required, float]}

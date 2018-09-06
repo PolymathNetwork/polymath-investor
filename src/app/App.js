@@ -51,16 +51,19 @@ class App extends Component<Props> {
 
   render () {
     const { history } = this.props
+    const polymathUI = ( // $FlowFixMe TODO @bshevchenko: props [1] is incompatible with empty [2]
+      <PolymathUI
+        history={history}
+        ticker={config.ticker}
+        logo={config.logo}
+        title={config.title}
+        termsOfService={config.termsOfService}
+        privacyPolicy={config.privacyPolicy}
+      />
+    )
     return (
       <Root>
-        <PolymathUI
-          history={history}
-          ticker={config.ticker}
-          logo={config.logo}
-          title={config.title}
-          termsOfService='https://polymath.network/termsofservice.html'
-          privacyPolicy='https://polymath.network/privacypolicy.html'
-        />
+        {polymathUI}
         {renderRoutes(this.props.route.routes)}
       </Root>
     )

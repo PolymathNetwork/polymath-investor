@@ -57,13 +57,15 @@ export const purchasePrep = () => async (dispatch: Function, getState: GetState)
   if (!(await st.verifyTransfer(0, account, 1))) {
     dispatch(ui.confirm(
       <div>
-        You are not allowed to participate in {token.ticker} STO.
+        Your wallet address cannot participate into this token sale.
+        Please contact the Issuer of the {token.ticker} security token for resolution.
       </div>,
       () => {},
-      'Purchase Error',
+      'Unable to Purchase Tokens',
       'Understood',
       '',
-      'Transaction Impossible'
+      'Transaction Error',
+      true
     ))
     return
   }
@@ -88,15 +90,34 @@ export const purchase = () => async (dispatch: Function, getState: GetState) => 
     isSufficientAllowance = allowance.gte(value)
   }
 
+  let polyConfirmText = <span />
+  if (details.isPolyFundraise) {
+    if (!isSufficientAllowance) {
+      polyConfirmText = (
+        <p>
+          Completion of your {token.ticker} token purchase will require
+          two wallet transactions:<br />
+          • The first transaction will be used to approve the payment of POLY<br />
+          • The second transaction will be used to transfer the POLY and complete the purchase of {token.ticker} tokens.
+        </p>
+      )
+    } else {
+      polyConfirmText = (
+        <p>
+          Usually completion of your {token.ticker} token purchase require two wallet transactions:<br />
+          • The first transaction to approve the payment of POLY<br />
+          • The second transaction to transfer the POLY and complete the purchase of {token.ticker} tokens.<br />
+          But you already approved POLY payment earlier, so now you will have to sign only second transaction.
+        </p>
+      )
+    }
+  }
+
   dispatch(ui.confirm(
     <div>
-      {details.isPolyFundraise ? (
-        <span>
-          {isSufficientAllowance ?
-            'You approved POLY spend earlier, so now you will have to sign only one transaction.' :
-            `Completion of your purchase of ${token.ticker} Token requires two wallet transactions.`}
-        </span>
-      ) : ''}
+      You are going to purchase <strong>{ui.thousandsDelimiter(tokens)} {token.ticker}</strong> tokens
+      for <strong>{ui.thousandsDelimiter(value)} {details.isPolyFundraise ? 'POLY' : 'ETH'}</strong>.
+      {polyConfirmText}
     </div>,
     async () => {
       if (!(await st.verifyTransfer(0, account, tokens))) {
@@ -106,10 +127,11 @@ export const purchase = () => async (dispatch: Function, getState: GetState) => 
             Try lower value.
           </div>,
           () => {},
-          'Purchase Error',
+          'Unable to Purchase Tokens',
           'Understood',
           '',
-          'Transaction Impossible'
+          'Transaction Error',
+          true
         ))
         return
       }
@@ -121,10 +143,11 @@ export const purchase = () => async (dispatch: Function, getState: GetState) => 
             is <strong>{ui.thousandsDelimiter(details.cap.minus(details.tokensSold))}</strong>.
           </div>,
           () => {},
-          'Purchase Error',
+          'Unable to Purchase Tokens',
           'Understood',
           '',
-          'Transaction Impossible'
+          'Transaction Error',
+          true
         ))
         return
       }

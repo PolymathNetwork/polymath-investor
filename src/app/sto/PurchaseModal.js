@@ -59,14 +59,15 @@ class PurchaseModal extends Component<Props> {
         className='purchase-modal'
       >
         <h4 className='pui-h4'>
-          Set the amount of {token.ticker} Token you would like to purchase and review the total cost.
+          Enter the amount of {token.ticker} tokens you would like to purchase
+          or the amount of {details.isPolyFundraise ? 'POLY' : 'ETH'} you would like to invest.
         </h4>
         <br />
         <PurchaseForm
           onSubmit={this.handleSubmit}
           onClose={this.handleClose}
           change={change}
-          rate={details.rate}
+          details={details}
         />
       </Modal>
     )

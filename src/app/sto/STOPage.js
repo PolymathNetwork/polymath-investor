@@ -68,7 +68,8 @@ class STOPage extends Component<Props> {
           </h3>
         </div>
       )
-    }
+    } // $FlowFixMe TODO @bshevchenko: props [1] is incompatible with empty [2]
+    const purchaseModal = <PurchaseModal />
     return (
       <DocumentTitle title={`${token.ticker} STO – ` + config.title}>
         <div style={{ marginTop: '100px' }}>
@@ -92,7 +93,7 @@ class STOPage extends Component<Props> {
               Purchase Tokens
             </Button>
           ) : ''}
-          <PurchaseModal />
+          {purchaseModal}
         </div>
       </DocumentTitle>
     )

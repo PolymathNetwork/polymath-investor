@@ -1,5 +1,7 @@
 {
-  "title": "Polymath",
+  "title": "Acme",
   "ticker": null,
-  "logo": "/logo.svg"
+  "logo": "/logo.svg",
+  "termsOfService": "#",
+  "privacyPolicy": "#"
 }
